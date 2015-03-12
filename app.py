@@ -17,10 +17,13 @@ def allowed_file(filename):
 def upload():
     if request.method == "POST":
         uploads = request.files.getlist("file[]")
+        zfile = zipfile.ZipFile("test.zip","w")
         for upload in uploads:
             if upload and allowed_file(upload.filename):
                 filename = secure_filename(upload.filename)
                 upload.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+                zfile.write(filename, filename, zipfile.ZIP_DEFLATED)
+        zfile.close()
         return render_template("uploaded_file.html",uploads=[elem.filename for elem in uploads],number_of_uploads=len(uploads))
     return render_template("upload.html")
 
