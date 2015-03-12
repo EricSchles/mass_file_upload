@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head></head>
+<body>
+
+<p><label>Uploads</label></p>
+{% for upload in uploads %}
+<table>
+<tr><td>
+{{upload}}
+</td></tr>
+{% endfor %}
+</table>
+<p><label>Number of uploads</label>: {{number_of_uploads}}</p>
+<p>all done</p>
+</body>
+</html>

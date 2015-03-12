@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head></head>
+<body>
+
+<form method="POST" action="{{url_for('upload')}}" enctype=multipart/form-data>
+ <input type="file" name="file[]" multiple></input>
+ <input type="submit"></input>
+</form>
+</body>
+</html>
+
