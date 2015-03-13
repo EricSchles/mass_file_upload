@@ -2,6 +2,7 @@ from flask import request,Flask, redirect, render_template, url_for, send_from_d
 import zipfile
 import os
 from werkzeug import secure_filename
+from datetime import date
 #config vars
 UPLOAD_FOLDER = os.getcwd()
 ALLOWED_EXTENSIONS = set(["pdf"])
@@ -17,20 +18,21 @@ def allowed_file(filename):
 def upload():
     if request.method == "POST":
         uploads = request.files.getlist("file[]")
-        zfile = zipfile.ZipFile("test.zip","w")
+
+        zfile = zipfile.ZipFile("test"+str(date.today())+".zip","w")
         for upload in uploads:
             if upload and allowed_file(upload.filename):
                 filename = secure_filename(upload.filename)
                 upload.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
                 zfile.write(filename, filename, zipfile.ZIP_DEFLATED)
         zfile.close()
-        return redirect(url_for("download"))
+        return redirect("download/"+zfile.filename)
+    
         #return render_template("uploaded_file.html",uploads=[elem.filename for elem in uploads],number_of_uploads=len(uploads))
     return render_template("upload.html")
 
-@app.route("/download",methods=["GET","POST"])
-def download():
-    filename = "test.zip"
+@app.route("/download/<filename>",methods=["GET","POST"])
+def download(filename):
     zfilename = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     return send_file(zfilename)
 
