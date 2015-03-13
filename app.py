@@ -1,4 +1,4 @@
-from flask import request,Flask, redirect, render_template, url_for
+from flask import request,Flask, redirect, render_template, url_for, send_from_directory, make_response, send_file
 import zipfile
 import os
 from werkzeug import secure_filename
@@ -24,8 +24,15 @@ def upload():
                 upload.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
                 zfile.write(filename, filename, zipfile.ZIP_DEFLATED)
         zfile.close()
-        return render_template("uploaded_file.html",uploads=[elem.filename for elem in uploads],number_of_uploads=len(uploads))
+        return redirect(url_for("download"))
+        #return render_template("uploaded_file.html",uploads=[elem.filename for elem in uploads],number_of_uploads=len(uploads))
     return render_template("upload.html")
+
+@app.route("/download",methods=["GET","POST"])
+def download():
+    filename = "test.zip"
+    zfilename = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    return send_file(zfilename)
 
 @app.route("/done",methods=["GET","POST"])
 def uploaded_file():
